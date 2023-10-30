@@ -26,7 +26,7 @@ public class TaskService {
     private final ModelMapper modelMapper;
 
     public List<TaskResponse> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> tasks = (List<Task>) taskRepository.findAll();
         return tasks.stream()
                 .map(task -> modelMapper.map(task, TaskResponse.class))
                 .collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class TaskService {
                 taskRequests.stream()
                         .map(taskRequest -> modelMapper.map(taskRequest, Task.class))
                         .collect(Collectors.toList());
-        tasks = taskRepository.saveAll(tasks);
+        tasks = (List<Task>) taskRepository.saveAll(tasks);
         return tasks.stream()
                 .map(task -> modelMapper.map(task, TaskResponse.class))
                 .collect(Collectors.toList());

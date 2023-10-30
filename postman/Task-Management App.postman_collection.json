@@ -1,0 +1,149 @@
+{
+	"info": {
+		"_postman_id": "f3c81055-5cbc-4a0e-ae0b-bef8d4c14584",
+		"name": "Task-Management App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28430410",
+		"_collection_link": "https://martian-capsule-417732.postman.co/workspace/New-Team-Workspace~0df16d72-669a-4950-af5c-6491f494dbc9/collection/28430410-f3c81055-5cbc-4a0e-ae0b-bef8d4c14584?action=share&source=collection_link&creator=28430410"
+	},
+	"item": [
+		{
+			"name": "Retrieve all tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/tasks"
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new task",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"title\": \"Design Meeting\",\r\n        \"description\": \"Meeting to discuss the new design proposal\",\r\n        \"assigneeId\": \"101\",\r\n        \"status\": \"Pending\"\r\n    },\r\n    {\r\n        \"title\": \"Code Review\",\r\n        \"description\": \"Review the latest commits\",\r\n        \"assigneeId\": \"101\",\r\n        \"status\": \"In Progress\"\r\n    },\r\n    {\r\n    \"title\": \"Design Meeting\",\r\n    \"description\": \"Meeting to discuss the new design proposal\",\r\n    \"assigneeId\": \"102\",\r\n    \"status\": \"Pending\"\r\n},\r\n{\r\n    \"title\": \"Bug Fixing\",\r\n    \"description\": \"Fix the reported bugs\",\r\n    \"assigneeId\": \"103\",\r\n    \"status\": \"Completed\"\r\n}\r\n\r\n\r\n]\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/tasks"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve a task by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/tasks/3"
+			},
+			"response": []
+		},
+		{
+			"name": "Update a task by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"assigneeId\": 101\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/tasks/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a task by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/tasks/4"
+			},
+			"response": []
+		},
+		{
+			"name": "Update a status by Id",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\": \"Completed\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/tasks/1/status"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve tasks by status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/tasks/status/Pending"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve tasks assigned to a specific user.",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/tasks/assignee/101"
+			},
+			"response": []
+		},
+		{
+			"name": "Add a comment to a task",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"comment\": \"This task should completed in week\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/tasks/1/comments"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve all comments of a task",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"title\": \"Design Meeting\",\r\n        \"description\": \"Meeting to discuss the new design proposal\",\r\n        \"assigneeId\": \"100\",\r\n        \"status\": \"Pending\"\r\n    },\r\n    {\r\n        \"title\": \"Code Review\",\r\n        \"description\": \"Review the latest commits\",\r\n        \"assigneeId\": \"101\",\r\n        \"status\": \"In Progress\"\r\n    }\r\n]\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/tasks/1/comments"
+			},
+			"response": []
+		}
+	]
+}
