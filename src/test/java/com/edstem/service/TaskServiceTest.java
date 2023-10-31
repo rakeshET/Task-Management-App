@@ -183,7 +183,7 @@ public class TaskServiceTest {
                 Task.builder()
                         .id(3L)
                         .status("completed")
-                        .build()); // A task with a different status
+                        .build());
 
         when(taskRepository.findByStatus(status)).thenReturn(tasks);
 
