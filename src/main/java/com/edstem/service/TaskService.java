@@ -13,12 +13,12 @@ import com.edstem.repository.TaskRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
@@ -78,7 +78,7 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    private Task findTaskById(Long id) {
+    Task findTaskById(Long id) {
         return taskRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with id " + id));

@@ -1,7 +1,11 @@
 package com.edstem.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -27,6 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
@@ -49,12 +54,14 @@ public class TaskServiceTest {
 
     @Test
     void testGetAllTasks() {
-        List<TaskRequest> taskRequests = Arrays.asList(new TaskRequest());
-        when(taskRepository.saveAll(any())).thenReturn(Arrays.asList(new Task()));
+        List<Task> mockTasks = Arrays.asList(new Task());
+        when(taskRepository.findAll()).thenReturn(mockTasks);
 
-        List<TaskResponse> tasks = taskService.createTasks(taskRequests);
+        List<TaskResponse> taskResponses = taskService.getAllTasks();
 
-        assertEquals(1, tasks.size());
+        verify(taskRepository, times(1)).findAll();
+
+        assertEquals(mockTasks.size(), taskResponses.size());
     }
 
     @Test
@@ -73,16 +80,40 @@ public class TaskServiceTest {
     }
 
     @Test
-    void testGetTaskById() {
+    void testGetTask() {
+        Optional<Task> ofResult = Optional.of(new Task());
+        when(taskRepository.findById(Mockito.<Long>any())).thenReturn(ofResult);
+
+        TaskResponse taskResponse = new TaskResponse();
+        taskResponse.setAssigneeId(1L);
+        taskResponse.setDescription("The characteristics of someone or something");
+        taskResponse.setId(1L);
+        taskResponse.setStatus("Status");
+        taskResponse.setTitle("Dr");
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<TaskResponse>>any()))
+                .thenReturn(taskResponse);
+        TaskResponse actualTask = taskService.getTask(1L);
+        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<TaskResponse>>any());
+        verify(taskRepository).findById(Mockito.<Long>any());
+        assertSame(taskResponse, actualTask);
+    }
+
+    @Test
+    void testGetTaskThrowsException() {
+
         Long id = 1L;
-        when(taskRepository.findById(id)).thenReturn(Optional.of(new Task()));
-        when(modelMapper.map(any(Task.class), eq(TaskResponse.class)))
-                .thenReturn(new TaskResponse());
+        TaskRepository taskRepository = mock(TaskRepository.class);
 
-        TaskResponse task = taskService.getTask(id);
+        when(taskRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertNotNull(task);
-        verify(modelMapper, times(1)).map(any(Task.class), eq(TaskResponse.class));
+        RuntimeException exception =
+                assertThrows(
+                        RuntimeException.class,
+                        () -> {
+                            taskService.getTask(id);
+                        });
+
+        assertThat(exception.getMessage(), containsString("Task not found with id " + id));
     }
 
     @Test
@@ -205,26 +236,19 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void testGetAllCommentsForTask() {
+    void testGetTaskComments() {
         Long taskId = 1L;
 
         Task task = Task.builder().id(taskId).status("in progress").build();
 
-        List<Comment> comments = new ArrayList<>();
-        comments.add(Comment.builder().id(1L).task(task).comment("Comment 1").build());
-        comments.add(Comment.builder().id(2L).task(task).comment("Comment 2").build());
-        comments.add(Comment.builder().id(3L).task(task).comment("Comment 3").build());
+        Comment comment1 = Comment.builder().id(1L).task(task).comment("Comment 1").build();
+        Comment comment2 = Comment.builder().id(2L).task(task).comment("Comment 2").build();
 
         when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(commentRepository.findByTaskId(taskId)).thenReturn(comments);
+        when(commentRepository.findByTaskId(taskId)).thenReturn(Arrays.asList(comment1, comment2));
 
         List<CommentResponse> result = taskService.getTaskComments(taskId);
 
-        List<CommentResponse> expectedResponses =
-                comments.stream()
-                        .map(comment -> modelMapper.map(comment, CommentResponse.class))
-                        .collect(Collectors.toList());
-
-        assertEquals(expectedResponses, result);
+        assertEquals(2, result.size());
     }
 }

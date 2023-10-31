@@ -1,10 +1,8 @@
 package com.edstem.contract.response;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
+@Getter
 public class TaskUpdateResponse {
     private Long id;
     private String title;
